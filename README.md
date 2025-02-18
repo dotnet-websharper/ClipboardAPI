@@ -53,19 +53,6 @@ The repository consists of two main projects:
 4. Open the hosted demo to see the Sample project in action:
    [https://dotnet-websharper.github.io/ClipboardAPI/](https://dotnet-websharper.github.io/ClipboardAPI/)
 
-## Why Use the Clipboard API
-
-The Clipboard API allows web applications to interact with the system clipboard for improved user experience. Key benefits include:
-
-1. **Copy and Paste Support**: Read and write clipboard contents programmatically.
-2. **Enhanced Productivity**: Enable seamless clipboard interactions within web applications.
-3. **Security and Permissions**: Ensure proper clipboard access based on user permissions.
-4. **Asynchronous API**: Handle clipboard operations efficiently using promises.
-
-**Note:** Clipboard access may require user permission, depending on the browser and context.
-
-Integrating the Clipboard API with WebSharper allows developers to build interactive and efficient applications in F#.
-
 ## How to Use the Clipboard API
 
 ### Example Usage
