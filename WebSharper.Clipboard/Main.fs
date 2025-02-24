@@ -90,8 +90,11 @@ module Definition =
     let ELement = 
         Class "Element"
         |+> Instance [
+            "oncopy" =@ T<unit> ^-> T<unit>
             "oncopy" =@ ClipboardEvent ^-> T<unit>
+            "oncut" =@ T<unit> ^-> T<unit>
             "oncut" =@ ClipboardEvent ^-> T<unit>
+            "onpaste" =@ T<unit> ^-> T<unit>
             "onpaste" =@ ClipboardEvent ^-> T<unit>
         ]
 
