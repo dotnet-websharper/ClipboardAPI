@@ -87,9 +87,18 @@ module Definition =
             "clipboard" =? Clipboard.Type  
         ]
 
+    let ELement = 
+        Class "Element"
+        |+> Instance [
+            "oncopy" =@ ClipboardEvent ^-> T<unit>
+            "oncut" =@ ClipboardEvent ^-> T<unit>
+            "onpaste" =@ ClipboardEvent ^-> T<unit>
+        ]
+
     let Assembly =
         Assembly [
             Namespace "WebSharper.Clipboard" [
+                ELement
                 Navigator
                 ClipboardEvent
                 ClipboardEventOptions
