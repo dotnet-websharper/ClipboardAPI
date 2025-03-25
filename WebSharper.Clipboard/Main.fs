@@ -81,34 +81,9 @@ module Definition =
             "clipboardData" =? T<obj>
         ]
 
-    let Navigator =
-        Class "Navigator"
-        |+> Instance [
-            "clipboard" =? Clipboard.Type  
-        ]
-
-    let ELement = 
-        Class "Element"
-        |+> Instance [
-            "oncopy" =@ T<unit> ^-> T<unit>
-            |> ObsoleteWithMessage "Use OnCopy instead"
-            "oncopy" =@ ClipboardEvent ^-> T<unit>
-            |> WithSourceName "OnCopy"
-            "oncut" =@ T<unit> ^-> T<unit>
-            |> ObsoleteWithMessage "Use OnCut instead"
-            "oncut" =@ ClipboardEvent ^-> T<unit>
-            |> WithSourceName "OnCut"
-            "onpaste" =@ T<unit> ^-> T<unit>
-            |> ObsoleteWithMessage "Use OnPaste instead"
-            "onpaste" =@ ClipboardEvent ^-> T<unit>
-            |> WithSourceName "OnPaste"
-        ]
-
     let Assembly =
         Assembly [
             Namespace "WebSharper.Clipboard" [
-                ELement
-                Navigator
                 ClipboardEvent
                 ClipboardEventOptions
                 Clipboard

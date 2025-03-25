@@ -17,8 +17,8 @@ module Client =
     let statusMessage = Var.Create ""
     let textInput = Var.Create ""
 
-    let clipboard = As<Navigator>(JS.Window.Navigator).Clipboard
-
+    let clipboard = JS.Window.Navigator.Clipboard
+    
     let copyText() =
         promise {
             try

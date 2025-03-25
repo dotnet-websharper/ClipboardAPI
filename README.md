@@ -83,7 +83,7 @@ module Client =
     let textInput = Var.Create ""
 
     // Access the browser's Clipboard API
-    let clipboard = As<Navigator>(JS.Window.Navigator).Clipboard
+    let clipboard = JS.Window.Navigator.Clipboard
 
     // Function to copy text to the clipboard
     let copyText() =
