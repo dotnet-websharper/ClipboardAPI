@@ -19,6 +19,12 @@ This repository contains:
 
 ## Live demos
 
+**Try it live:** [Open the sample in your browser](https://dotnet-websharper.github.io/ClipboardAPI/)
+
+![Clipboard API sample](docs/sample.png)
+
+The sample doubles as the binding's [test case](#running-the-sample): it exercises plain-text and rich-text copy/paste in a real browser.
+
 - **Sample (this repository):** <https://dotnet-websharper.github.io/ClipboardAPI/>
 - **Source repository:** <https://github.com/dotnet-websharper/ClipboardAPI>
 - **WebSharper bindings:** <https://websharper.com/bindings>
