@@ -64,10 +64,10 @@ function copyText(){
         statusMessage().Set("Copied plain text to the clipboard.");
         return Promise.resolve(null);
       }));
-    })["catch"]((d) => {
-      const a=unwrapExn(d);
-      console.error("Failed to copy text:", a.message);
-      statusMessage().Set("Copy failed: "+a.message);
+    })["catch"]((a) => {
+      const a_1=unwrapExn(a);
+      console.error("Failed to copy text:", a_1.message);
+      statusMessage().Set("Copy failed: "+a_1.message);
       return Promise.resolve(null);
     }));
   });
@@ -75,15 +75,15 @@ function copyText(){
 function pasteText(){
   return new Promise((_1) => {
     _1(new Promise((_2) => {
-      _2(clipboard().readText().then((d) => {
-        textInput().Set(d);
+      _2(clipboard().readText().then((a) => {
+        textInput().Set(a);
         statusMessage().Set("Pasted plain text from the clipboard.");
         return Promise.resolve(null);
       }));
-    })["catch"]((d) => {
-      const a=unwrapExn(d);
-      console.error("Failed to paste text:", a.message);
-      statusMessage().Set("Paste failed: "+a.message);
+    })["catch"]((a) => {
+      const a_1=unwrapExn(a);
+      console.error("Failed to paste text:", a_1.message);
+      statusMessage().Set("Paste failed: "+a_1.message);
       return Promise.resolve(null);
     }));
   });
@@ -97,10 +97,10 @@ function copyRichText(){
         return Promise.resolve(null);
       });
       _2(_3);
-    })["catch"]((d) => {
-      const a=unwrapExn(d);
-      console.error("Failed to copy rich text:", a.message);
-      statusMessage().Set("Rich copy failed: "+a.message);
+    })["catch"]((a) => {
+      const a_1=unwrapExn(a);
+      console.error("Failed to copy rich text:", a_1.message);
+      statusMessage().Set("Rich copy failed: "+a_1.message);
       return Promise.resolve(null);
     }));
   });
@@ -108,24 +108,24 @@ function copyRichText(){
 function pasteRichText(){
   return new Promise((_1) => {
     _1(new Promise((_2) => {
-      _2(clipboard().read().then((d) => {
-        if(length(d)===0){
+      _2(clipboard().read().then((a) => {
+        if(length(a)===0){
           statusMessage().Set("The clipboard is empty.");
           return Promise.resolve(null);
         }
         else {
-          const item=get(d, 0);
-          return arrContains("text/html", item.types)?item.getType("text/html").then((d_1) => d_1.text().then((d_2) => {
-            richPreview().Set(d_2);
+          const item=get(a, 0);
+          return arrContains("text/html", item.types)?item.getType("text/html").then((a_1) => a_1.text().then((a_2) => {
+            richPreview().Set(a_2);
             statusMessage().Set("Pasted rich text from the clipboard.");
             return Promise.resolve(null);
           })):(statusMessage().Set("No text/html on the clipboard."),Promise.resolve(null));
         }
       }));
-    })["catch"]((d) => {
-      const a=unwrapExn(d);
-      console.error("Failed to paste rich text:", a.message);
-      statusMessage().Set("Rich paste failed: "+a.message);
+    })["catch"]((a) => {
+      const a_1=unwrapExn(a);
+      console.error("Failed to paste rich text:", a_1.message);
+      statusMessage().Set("Rich paste failed: "+a_1.message);
       return Promise.resolve(null);
     }));
   });
@@ -3066,7 +3066,7 @@ class Event extends TemplateHole {
 }
 function Handler(name, callback){
   return Attr.A3((el) => {
-    el.addEventListener(name, (d) =>(callback(el))(d), false);
+    el.addEventListener(name, (o) =>(callback(el))(o), false);
   });
 }
 function OnAfterRender(callback){
@@ -3103,7 +3103,7 @@ function DynamicCustom(set_1, view){
 class Attr {
   static HandlerImpl(event, q){
     return Attr.A3((el) => {
-      el.addEventListener(event, (d) =>(q(el))(d), false);
+      el.addEventListener(event, (o) =>(q(el))(o), false);
     });
   }
   static Concat(xs){
