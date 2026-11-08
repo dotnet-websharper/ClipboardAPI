@@ -1,0 +1,22 @@
+type file
+id WebSharper.Clipboard
+authors
+    IntelliFactory
+owners
+    IntelliFactory
+repositoryType git
+repositoryUrl https://github.com/dotnet-websharper/ClipboardAPI/
+licenseUrl https://github.com/dotnet-websharper/ClipboardAPI/blob/main/LICENSE.md
+iconUrl https://github.com/dotnet-websharper/core/raw/websharper50/tools/WebSharper.png
+projectUrl https://github.com/dotnet-websharper/ClipboardAPI
+description
+    WebSharper bindings for Clipboard
+tags
+    Web JavaScript F# C#
+files
+    ../WebSharper.Clipboard.Extensions/bin/Release/netstandard2.0/WebSharper.Clipboard.Extensions.dll ==> lib/netstandard2.0
+    ../WebSharper.Clipboard.Extensions/bin/Release/netstandard2.0/WebSharper.Clipboard.Extensions.xml ==> lib/netstandard2.0
+    ../WebSharper.Clipboard/bin/Release/netstandard2.0/WebSharper.Clipboard.dll ==> lib/netstandard2.0
+    ../WebSharper.Clipboard/bin/Release/netstandard2.0/WebSharper.Clipboard.xml ==> lib/netstandard2.0
+dependencies
+        WebSharper ~> LOCKEDVERSION:[3]

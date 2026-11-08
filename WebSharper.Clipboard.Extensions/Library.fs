@@ -9,6 +9,12 @@ module Extensions =
         [<Inline "$this.clipboard">]
         member this.Clipboard with get():Clipboard = X<Clipboard>
 
+    type Clipboard with
+        [<Inline "$this.onclipboardchange">]
+        member this.OnClipboardChange with get(): (ClipboardChangeEvent -> unit) = ignore
+        [<Inline "$this.onclipboardchange = $callback">]
+        member this.OnClipboardChange with set(callback: ClipboardChangeEvent -> unit) = ()
+
     type Dom.Element with
         [<Inline "$this.oncopy">]
         member this.OnCopy with get(): (ClipboardEvent -> unit) = ignore

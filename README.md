@@ -1,143 +1,195 @@
-# WebSharper Clipboard API Binding
+# WebSharper.Clipboard
 
-This repository provides an F# [WebSharper](https://websharper.com/) binding for the [Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API), enabling seamless clipboard access and management in WebSharper applications.
+[![NuGet](https://img.shields.io/badge/nuget-not%20published-lightgrey)](https://github.com/dotnet-websharper/ClipboardAPI)
 
-## Repository Structure
+WebSharper bindings for the [Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API) —
+asynchronous read and write access to the system clipboard from F# and C# web apps.
 
-The repository consists of two main projects:
+The Clipboard API is only available in [secure contexts](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Secure_Contexts)
+(HTTPS or localhost), and browsers may require a user gesture or a permission prompt before
+allowing clipboard access.
 
-1. **Binding Project**:
+This repository contains:
 
-   - Contains the F# WebSharper binding for the Clipboard API.
+| Project | Purpose |
+| --- | --- |
+| `WebSharper.Clipboard` | The binding: WIG definitions for `Clipboard`, `ClipboardItem`, `ClipboardEvent`, `ClipboardChangeEvent`, and their option dictionaries. |
+| `WebSharper.Clipboard.Extensions` | `[<Inline>]` client extensions: `Navigator.Clipboard`, element `OnCopy`/`OnCut`/`OnPaste` handlers, and `Clipboard.OnClipboardChange`. |
+| `WebSharper.Clipboard.Sample` | An ASP.NET Core SPA that demonstrates plain-text and rich-text copy/paste. |
 
-2. **Sample Project**:
-   - Demonstrates how to use the Clipboard API with WebSharper syntax.
-   - Includes a GitHub Pages demo: [View Demo](https://dotnet-websharper.github.io/ClipboardAPI/).
+## Live demos
+
+**Try it live:** [Open the sample in your browser](https://dotnet-websharper.github.io/ClipboardAPI/)
+
+![Clipboard API sample](docs/sample.png)
+
+The sample doubles as the binding's [test case](#running-the-sample): it exercises plain-text and rich-text copy/paste in a real browser.
+
+- **Sample (this repository):** <https://dotnet-websharper.github.io/ClipboardAPI/>
+- **Source repository:** <https://github.com/dotnet-websharper/ClipboardAPI>
+- **WebSharper bindings:** <https://websharper.com/bindings>
 
 ## Features
 
-- WebSharper bindings for the Clipboard API.
-- Read and write text from/to the clipboard.
-- Example usage for copying and pasting content.
-- Hosted demo to explore API functionality.
+- `navigator.clipboard.readText()` / `writeText()` for plain text.
+- `navigator.clipboard.read()` / `write()` with `ClipboardItem` for multiple MIME types.
+- `ClipboardItem.supports(type)`, `types`, `presentationStyle`, and `getType(type)`.
+- `ClipboardEvent` (`clipboardData`) and element `oncopy`/`oncut`/`onpaste` handlers.
+- The experimental `clipboardchange` event and `ClipboardChangeEvent` (`types`, `changeId`).
 
-## Installation and Building
+## Installation
 
-### Prerequisites
+The binding is not currently published to NuGet. Reference the projects from source:
 
-- [.NET SDK](https://dotnet.microsoft.com/download) installed on your machine.
+```bash
+git clone https://github.com/dotnet-websharper/ClipboardAPI.git
+```
 
-### Steps
+```xml
+<ItemGroup>
+  <ProjectReference Include="path/to/WebSharper.Clipboard/WebSharper.Clipboard.fsproj" />
+  <ProjectReference Include="path/to/WebSharper.Clipboard.Extensions/WebSharper.Clipboard.Extensions.fsproj" />
+</ItemGroup>
+```
 
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/dotnet-websharper/ClipboardAPI.git
-   cd Clipboard
-   ```
-
-2. Build the Binding Project:
-
-   ```bash
-   dotnet build WebSharper.Clipboard/WebSharper.Clipboard.fsproj
-   ```
-
-3. Build and Run the Sample Project:
-
-   ```bash
-   cd WebSharper.Clipboard.Sample
-   dotnet build
-   dotnet run
-   ```
-
-4. Open the hosted demo to see the Sample project in action:
-   [https://dotnet-websharper.github.io/ClipboardAPI/](https://dotnet-websharper.github.io/ClipboardAPI/)
-
-## How to Use the Clipboard API
-
-### Example Usage
-
-Below is an example of how to use the Clipboard API in a WebSharper project:
+## Usage
 
 ```fsharp
-namespace WebSharper.Clipboard.Sample
+namespace WebSharper.Clipboard.Demo
 
 open WebSharper
 open WebSharper.JavaScript
-open WebSharper.UI
-open WebSharper.UI.Notation
-open WebSharper.UI.Client
-open WebSharper.UI.Templating
 open WebSharper.Clipboard
 
 [<JavaScript>]
-module Client =
-    // The templates are loaded from the DOM, so you just can edit index.html
-    // and refresh your browser, no need to recompile unless you add or remove holes.
-    type IndexTemplate = Template<"wwwroot/index.html", ClientLoad.FromDocument>
+module Demo =
+    type ClipboardItemData =
+        {
+            ``text/html``: string
+            ``text/plain``: string
+        }
 
-    // Variable to store the clipboard status
-    let statusMessage = Var.Create ""
-
-    // Variable to hold text input
-    let textInput = Var.Create ""
-
-    // Access the browser's Clipboard API
     let clipboard = JS.Window.Navigator.Clipboard
 
-    // Function to copy text to the clipboard
-    let copyText() =
+    let copyText (text: string) =
         promise {
             try
-                // Write the text input value to the clipboard
-                do! clipboard.WriteText(textInput.Value)
-                statusMessage := "Copied to clipboard!"
+                do! clipboard.WriteText(text)
+                Console.Log("Copied plain text.")
             with ex ->
-                // Log and update status in case of error
-                Console.Error("Failed to copy:", ex.Message)
-                statusMessage := "Copy failed!"
+                Console.Error("Copy failed:", ex.Message)
         }
 
-    // Function to read text from the clipboard
-    let pasteText() =
+    let pasteText () =
         promise {
             try
-                // Read text from the clipboard
                 let! text = clipboard.ReadText()
-                textInput := text
-                statusMessage := "Pasted from clipboard!"
+                Console.Log("Clipboard text:", text)
             with ex ->
-                // Log and update status in case of error
-                Console.Error("Failed to paste:", ex.Message)
-                statusMessage := "Paste failed!"
+                Console.Error("Paste failed:", ex.Message)
         }
 
-    [<SPAEntryPoint>]
-    let Main () =
-        // Initialize the UI template and bind variables to UI elements
-        IndexTemplate.Main()
-            // Bind the copy action to a UI button
-            .copyText(fun _ ->
-                async {
-                    do! copyText().AsAsync()
-                }
-                |> Async.Start
-            )
-            // Bind the paste action to a UI button
-            .pasteText(fun _ ->
-                async {
-                    do! pasteText().AsAsync()
-                }
-                |> Async.Start
-            )
-            // Bind status message to display operation results
-            .status(statusMessage.V)
-            // Bind text input variable for user interaction
-            .textInput(textInput)
-            .Doc()
-        |> Doc.RunById "main"
+    let copyRichText (html: string) (text: string) =
+        promise {
+            try
+                let item = ClipboardItem(box { ``text/html`` = html; ``text/plain`` = text })
+                do! clipboard.Write([| item |])
+                Console.Log("Copied rich text (text/html + text/plain).")
+            with ex ->
+                Console.Error("Rich copy failed:", ex.Message)
+        }
+
+    let pasteRichText () =
+        promise {
+            try
+                let! items = clipboard.Read()
+                if items.Length > 0 then
+                    let item = items.[0]
+                    if Array.contains "text/html" item.Types then
+                        let! blob = item.GetType("text/html")
+                        let! html = blob.Text()
+                        Console.Log("Clipboard HTML:", html)
+            with ex ->
+                Console.Error("Rich paste failed:", ex.Message)
+        }
+
+    // Experimental: the clipboardchange event is not Baseline.
+    clipboard.OnClipboardChange <- fun _ ->
+        Console.Log("The clipboard changed.")
 ```
 
-This example demonstrates how to copy and paste text using the Clipboard API.
+The binding's `read()` options type is named `ClipboardReadFormats`; set its `Unsanitized`
+field to request unsanitized formats. The experimental `clipboardchange` event is available
+through `Clipboard.OnClipboardChange` or `addEventListener("clipboardchange", ...)`.
 
-For a complete implementation, refer to the [Sample Project](https://dotnet-websharper.github.io/ClipboardAPI/).
+## Running the sample
+
+Build the sample in Release and serve its static output:
+
+```bash
+dotnet build WebSharper.Clipboard.Sample/WebSharper.Clipboard.Sample.fsproj -c Release
+python3 -m http.server -d WebSharper.Clipboard.Sample/wwwroot 8099
+```
+
+Open <http://localhost:8099/>. Localhost counts as a secure context, so the Clipboard API is
+available. Grant the clipboard permission when the browser prompts for it.
+
+Alternatively, run the ASP.NET Core host:
+
+```bash
+dotnet run --project WebSharper.Clipboard.Sample
+```
+
+## Building from source
+
+### Prerequisites
+
+- [.NET SDK 10](https://dotnet.microsoft.com/download) or later.
+
+### Build
+
+```bash
+dotnet build WebSharper.Clipboard.sln -c Release
+```
+
+The binding projects target `netstandard2.0`; the sample targets `net10.0`.
+
+## Deployment
+
+Pushing to `main` triggers `.github/workflows/ghpages.yml`, which builds the sample in Release
+and publishes `WebSharper.Clipboard.Sample/wwwroot` to the `gh-pages` branch.
+
+## Repository layout
+
+```
+WebSharper.Clipboard/              # binding (WIG definitions)
+  Main.fs
+WebSharper.Clipboard.Extensions/   # [<Inline>] client extensions
+  Library.fs
+WebSharper.Clipboard.Sample/       # ASP.NET Core SPA demo
+  Client.fs
+  Startup.fs
+  wwwroot/
+    index.html
+    site.css
+.github/workflows/ghpages.yml      # build + deploy the sample to GitHub Pages
+```
+
+## Notes on the API
+
+- **Secure context:** `navigator.clipboard` is only exposed in secure contexts. Serve the page
+  over HTTPS or from localhost.
+- **Permissions:** browsers may require a user gesture (for example, a button click) or a
+  permission prompt before reading the clipboard. Handle rejected promises.
+- **Rich text:** `Clipboard.write()` takes an array of `ClipboardItem`s. A `ClipboardItem` is
+  created from a record keyed by MIME type (for example, `text/html` and `text/plain`); the
+  binding accepts the data as `obj`.
+- **`clipboardchange`:** the event is experimental and not Baseline. The binding exposes it
+  through `Clipboard.OnClipboardChange` and the `ClipboardChangeEvent` type; `changeId` is a
+  JavaScript `BigInt`.
+- **Read options:** the binding keeps the historical type name `ClipboardReadFormats` for the
+  `read()` options.
+
+## License
+
+Apache 2.0 — see [LICENSE.md](LICENSE.md).

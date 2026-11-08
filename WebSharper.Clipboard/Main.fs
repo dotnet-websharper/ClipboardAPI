@@ -25,7 +25,7 @@ module Definition =
         Pattern.Config "ClipboardItemOptions" {
             Required = []
             Optional = [
-                "presentationStyle", Enum.PresentationStyle.Type
+                ("presentationStyle", Enum.PresentationStyle.Type)
             ]
         }
 
@@ -47,7 +47,7 @@ module Definition =
         Pattern.Config "ClipboardReadFormats" {
             Required = []
             Optional = [
-                "unsanitized", !|T<string>  
+                ("unsanitized", !|T<string>)
             ]
         }
 
@@ -81,11 +81,34 @@ module Definition =
             "clipboardData" =? T<obj>
         ]
 
+    // Experimental (not Baseline) clipboardchange event, added to match the current MDN surface.
+    let ClipboardChangeEventOptions =
+        Pattern.Config "ClipboardChangeEventOptions" {
+            Required = []
+            Optional = [
+                ("types", !|T<string>)
+                ("changeId", T<BigInt>)
+            ]
+        }
+
+    let ClipboardChangeEvent =
+        Class "ClipboardChangeEvent"
+        |=> Inherits T<Dom.Event>
+        |+> Static [
+            Constructor (T<string>?``type`` * !?ClipboardChangeEventOptions?options)
+        ]
+        |+> Instance [
+            "types" =? !|T<string>
+            "changeId" =? T<BigInt>
+        ]
+
     let Assembly =
         Assembly [
             Namespace "WebSharper.Clipboard" [
                 ClipboardEvent
                 ClipboardEventOptions
+                ClipboardChangeEvent
+                ClipboardChangeEventOptions
                 Clipboard
                 ClipboardReadFormats
                 ClipboardItem
